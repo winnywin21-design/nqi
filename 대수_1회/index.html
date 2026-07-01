@@ -46,16 +46,25 @@ button.sub{height:42px;padding:0 16px;border:1px solid var(--line);background:#f
 .reasons{display:flex;flex-wrap:wrap;gap:6px}
 .rbtn{padding:6px 12px;border:1px solid var(--line);background:#fff;border-radius:16px;font-size:13px;color:var(--mut);cursor:pointer}
 .rbtn.on{background:var(--accbg);color:var(--accent);border-color:var(--accent)}
-textarea{width:100%;min-height:70px;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px;font-family:inherit;resize:vertical;background:#fff}
+textarea{width:100%;min-height:130px;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px;font-family:inherit;resize:vertical;background:#fff}
 .review{display:flex;gap:14px}
 .review label{display:flex;align-items:center;gap:5px;font-size:13px;color:var(--ink);cursor:pointer}
 .allok{color:var(--ok);font-size:14px}
+@page{size:A4;margin:11mm}
 @media print{
  body{background:#fff;padding:0}.wrap{border:none;padding:0;max-width:none}
- .head,.note,.grid,.btns,.tabs,#panel-score{display:none!important}
+ .head,.note,.grid,.btns,.tabs,#panel-score,.sec{display:none!important}
+ #panel-note>button{display:none!important}
  .result{display:block!important;margin:0}#panel-note{display:block!important}
- .onote{break-inside:avoid;border:1px solid #bbb;page-break-inside:avoid}
- .rbtn{-webkit-print-color-adjust:exact;print-color-adjust:exact}textarea{min-height:90px}
+ /* 한 문항 = A4 한 장, 풀이 칸이 남는 높이를 꽉 채움(하단 여백 제거) */
+ .onote{break-inside:avoid;page-break-after:always;border:1px solid #bbb;padding:10px;margin:0;height:275mm;display:flex;flex-direction:column}
+ .onote:last-child{page-break-after:auto}
+ .onote .oh{margin-bottom:7px}
+ .onote img{margin-bottom:8px;width:auto;max-width:100%;max-height:105mm;object-fit:contain}
+ .fld{margin-top:8px}
+ .fld.solve{flex:1;display:flex;flex-direction:column;min-height:0}
+ .fld.solve textarea{flex:1;min-height:0}
+ .rbtn{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 </style></head>
 <body>
@@ -119,12 +128,10 @@ document.getElementById('grade').onclick=function(){
   else{var html='<p class="sec">오답노트 — 틀린 '+wrong.length+'문항</p>';
     wrong.forEach(function(q){
       var rs='';REASONS.forEach(function(r){rs+='<button class="rbtn" onclick="this.classList.toggle(\'on\')">'+r+'</button>';});
-      var redo=META[q].mcq?'<div class="opts">'+[1,2,3,4,5].map(function(ch){return '<button class="opt" onclick="var p=this.parentNode;[].forEach.call(p.children,function(x){x.className=\'opt\'});this.className=\'opt sel\'">'+CIRCLE[ch]+'</button>';}).join('')+'</div>':'<input type="text" inputmode="numeric" placeholder="다시 푼 답">';
       html+='<div class="onote"><div class="oh"><span class="tag">'+q+'번</span><span class="utag">'+META[q].unit+'</span><span class="ans">내 답 '+mine(q)+' · 정답 '+key(q)+'</span></div>'+
         '<img src="'+META[q].img+'" alt="'+q+'번 문제">'+
-        '<div class="fld"><div class="lab">다시 풀기</div>'+redo+'</div>'+
         '<div class="fld"><div class="lab">틀린 이유</div><div class="reasons">'+rs+'</div></div>'+
-        '<div class="fld"><div class="lab">풀이 · 메모</div><textarea placeholder="올바른 풀이나 떠올려야 할 개념을 적어두세요"></textarea></div>'+
+        '<div class="fld solve"><div class="lab">풀이 · 메모</div><textarea placeholder="올바른 풀이나 떠올려야 할 개념을 적어두세요"></textarea></div>'+
         '<div class="fld"><div class="lab">복습</div><div class="review"><label><input type="checkbox">1회</label><label><input type="checkbox">2회</label><label><input type="checkbox">3회</label></div></div></div>';
     });
     html+='<button class="sub" onclick="window.print()">오답노트 인쇄 / PDF 저장</button>';PN.innerHTML=html;}
