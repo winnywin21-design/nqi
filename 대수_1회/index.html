@@ -43,7 +43,7 @@ button.sub{height:42px;padding:0 16px;border:1px solid var(--line);background:#f
 .fld{margin-top:12px}
 .fld .lab{font-size:12px;color:var(--mut);font-weight:600;margin-bottom:6px}
 .reasons{display:flex;flex-wrap:wrap;gap:6px}
-.rbtn{-webkit-appearance:none;appearance:none;padding:6px 12px;border:1px solid var(--line);background:#fff;border-radius:16px;font-size:13px;color:var(--mut);cursor:pointer}
+.rbtn{display:inline-block;-webkit-appearance:none;appearance:none;padding:6px 12px;border:1px solid var(--line);background:#fff;border-radius:16px;font-size:13px;color:var(--mut);cursor:pointer;-webkit-user-select:none;user-select:none}
 .rbtn.on{background:var(--accbg);color:var(--accent);border-color:var(--accent)}
 textarea{width:100%;min-height:130px;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px;font-family:inherit;resize:vertical;background:#fff}
 .review{display:flex;gap:14px}
@@ -142,7 +142,7 @@ document.getElementById('grade').onclick=function(){
   if(!wrong.length){PN.innerHTML='<p class="allok">전 문항 정답입니다. 오답노트에 담을 문항이 없어요.</p>';}
   else{var html='<p class="sec">오답노트 — 틀린 '+wrong.length+'문항</p>';
     wrong.forEach(function(q){
-      var rs='';REASONS.forEach(function(r){rs+='<button class="rbtn" onclick="this.classList.toggle(\'on\')">'+r+'</button>';});
+      var rs='';REASONS.forEach(function(r){rs+='<span class="rbtn" onclick="this.classList.toggle(\'on\')">'+r+'</span>';});
       html+='<div class="onote"><div class="oh"><span class="tag">'+q+'번</span><span class="utag">'+META[q].unit+'</span><span class="ans">내 답 '+mine(q)+' · 정답 '+key(q)+'</span></div>'+
         '<img src="'+META[q].img+'" alt="'+q+'번 문제">'+
         '<div class="fld"><div class="lab">틀린 이유</div><div class="reasons">'+rs+'</div></div>'+
