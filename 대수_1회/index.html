@@ -270,11 +270,26 @@ document.getElementById('reset').onclick=function(){picks={};
 // 계약: detectAndWarp(imgElement, spec) → {gray:Uint8Array,width,height} | null
 // 로직 정확도는 실제 폰 프로토콜(Plan B Phase 5)로 검증. _orderQuad만 Node 단위테스트.
 (function (root) {
-  function _orderQuad(pts) { // 좌상, 우상, 우하, 좌하 순
-    pts = pts.slice().sort((a, b) => a.y - b.y);
-    const top = pts.slice(0, 2).sort((a, b) => a.x - b.x);
-    const bot = pts.slice(2, 4).sort((a, b) => a.x - b.x);
-    return [top[0], top[1], bot[1], bot[0]];
+  // 사각형 후보들 중 '네 극단점'을 코너 마커로 고른다(좌상,우상,우하,좌하).
+  // 크기로 고르면 칠한 답 버블(코너 마커와 크기 비슷)이 섞여 깨지므로, 위치 극단으로 고른다.
+  function _pickCorners(pts) {
+    var TL, TR, BR, BL, minS = Infinity, maxS = -Infinity, minD = Infinity, maxD = -Infinity;
+    for (var i = 0; i < pts.length; i++) {
+      var p = pts[i], s = p.x + p.y, d = p.x - p.y;
+      if (s < minS) { minS = s; TL = p; }
+      if (s > maxS) { maxS = s; BR = p; }
+      if (d > maxD) { maxD = d; TR = p; }
+      if (d < minD) { minD = d; BL = p; }
+    }
+    return [TL, TR, BR, BL];
+  }
+
+  // 마커의 '정규화 위치'(폭 단위)를 출력 좌표로 보내는 목적지 점(좌상,우상,우하,좌하).
+  // omr-core가 좌표를 x*outW, y*outW로 읽으므로 마커도 같은 규칙으로 펴야 정합.
+  // markers 입력 순서는 [좌상,우상,좌하,우하](cardspec 순).
+  function _contentDst(markers, outW) {
+    const o = [markers[0], markers[1], markers[3], markers[2]]; // → 좌상,우상,우하,좌하
+    return o.flatMap(m => [m.x * outW, m.y * outW]);
   }
 
   function detectAndWarp(imgEl, spec, outW) {
@@ -299,11 +314,9 @@ document.getElementById('reset').onclick=function(){picks={};
     }
     let result = null;
     if (sq.length >= 4) {
-      sq.sort((a, b) => b.area - a.area);
-      const quad = _orderQuad(sq.slice(0, 4));
+      const quad = _pickCorners(sq);
       const srcTri = cv.matFromArray(4, 1, cv.CV_32FC2, quad.flatMap(p => [p.x, p.y]));
-      const dstTri = cv.matFromArray(4, 1, cv.CV_32FC2,
-        [0, 0, outW, 0, outW, outH, 0, outH]);
+      const dstTri = cv.matFromArray(4, 1, cv.CV_32FC2, _contentDst(spec.markers, outW));
       const M = cv.getPerspectiveTransform(srcTri, dstTri);
       const warped = new cv.Mat();
       cv.warpPerspective(gray, warped, M, new cv.Size(outW, outH));
@@ -316,7 +329,7 @@ document.getElementById('reset').onclick=function(){picks={};
     return result;
   }
 
-  root.OMRCv = { detectAndWarp, _orderQuad };
+  root.OMRCv = { detectAndWarp, _pickCorners, _contentDst };
 })(typeof globalThis !== "undefined" ? globalThis : this);
 
 // 촬영 → 인식 → 입력화면 자동채움. CARDSPEC/META/picks/grid 전역 사용.
