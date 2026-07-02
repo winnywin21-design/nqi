@@ -214,17 +214,16 @@ document.getElementById('reset').onclick=function(){picks={};
   }
 
   function assembleDigits(places) {
+    // 칠한 자리만 순서대로 이어붙인다. 학생이 왼쪽정렬로 칠하든 오른쪽정렬로 칠하든
+    // (예: "64"를 백·십 칸에 칠해도, 십·일 칸에 칠해도) 같은 64가 되도록.
     const ds = places.map(_decideDigit);
+    const idx = ds.map((d, i) => (d.flag !== "blank" ? i : -1)).filter(i => i >= 0);
     let flag = "ok";
     if (ds.some(d => d.flag === "multi")) flag = "multi";
     else if (ds.some(d => d.flag === "ambiguous")) flag = "ambiguous";
-    const firstReal = ds.findIndex(d => d.flag !== "blank");
-    if (firstReal === -1) return { value: null, flag: "blank", digits: ds };
-    let value = 0;
-    for (let i = firstReal; i < ds.length; i++) {
-      if (ds[i].flag === "blank") { flag = "ambiguous"; value = value * 10; }
-      else value = value * 10 + ds[i].val;
-    }
+    if (idx.length === 0) return { value: null, flag: "blank", digits: ds };
+    if (idx[idx.length - 1] - idx[0] + 1 !== idx.length) flag = "ambiguous"; // 칠한 칸 사이 빈칸
+    const value = parseInt(idx.map(i => ds[i].val).join(""), 10);
     return { value, flag, digits: ds };
   }
 
