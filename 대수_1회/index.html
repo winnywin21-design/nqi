@@ -2,7 +2,7 @@
 <html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>대수 · 제1회 모의평가 · 채점 &amp; 오답노트</title>
 <style>
-:root{--navy:#1F3864;--ink:#1f2328;--mut:#6b7280;--line:#e5e7eb;--bg:#f7f8fa;--card:#fff;--ok:#1d9e75;--okbg:#e1f5ee;--no:#e24b4a;--nobg:#fcebeb;--accent:#185fa5;--accbg:#e6f1fb;--warn:#ba7517;--head:#1F3864;--barc:#1F3864;--field:#fff;}
+:root{--navy:#1F3864;--ink:#1f2328;--mut:#6b7280;--line:#e5e7eb;--bg:#f7f8fa;--card:#fff;--ok:#1d9e75;--okbg:#e1f5ee;--no:#e24b4a;--nobg:#fcebeb;--accent:#185fa5;--accbg:#e6f1fb;--warn:#ba7517;--head:#1F3864;--barc:#1F3864;--field:#fff;--warnbg:#fff4e5;--ctaA:#3f82d4;--ctaB:#215ea6;--ctashadow:rgba(33,94,166,.4);--logobg:transparent;--logopad:0;}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;padding:16px}
 .wrap{max-width:680px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
@@ -14,7 +14,7 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var
 .omrhead{display:flex;align-items:center;gap:10px;margin-bottom:18px}
 .omrhead .pill{background:#b25566;color:#fff;font-weight:700;font-size:15px;padding:6px 14px;border-radius:8px;white-space:nowrap}
 .omrhead .htitle{font-size:16px;font-weight:700;color:var(--ink)}
-.omrhead .logo{margin-left:auto;height:16px;width:auto;flex:none}
+.omrhead .logo{margin-left:auto;height:16px;width:auto;flex:none;background:var(--logobg);padding:var(--logopad);border-radius:5px;box-sizing:content-box}
 .cambtn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;width:100%;min-height:208px;background:linear-gradient(160deg,#2a4c83 0%,#1F3864 58%,#162a4d 100%);color:#fff;border-radius:16px;cursor:pointer;box-shadow:0 8px 28px rgba(31,56,100,.34);border:2px dashed rgba(255,255,255,.30);position:relative;overflow:hidden;-webkit-tap-highlight-color:transparent;animation:camin .5s cubic-bezier(.34,1.56,.64,1)}
 .cambtn::before{content:"";position:absolute;top:-40%;left:-30%;width:70%;height:180%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.10),transparent);transform:rotate(18deg)}
 .cambtn:active{transform:translateY(1px);box-shadow:0 5px 18px rgba(31,56,100,.34)}
@@ -33,7 +33,7 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var
 .camhint{text-align:center;font-size:12.5px;color:var(--mut);margin-top:6px}
 .result{border-radius:10px;padding:12px 14px;font-size:14.5px;font-weight:700;margin-bottom:14px;line-height:1.45}
 .result.ok{background:var(--okbg);color:var(--ok)}
-.result.warn{background:#fff4e5;color:var(--warn)}
+.result.warn{background:var(--warnbg);color:var(--warn)}
 /* 촬영 완료 후: 촬영 박스를 작은 '다시 촬영' 버튼으로 축소 */
 #capture-area.done .cambtn{min-height:48px;flex-direction:row;gap:8px;background:var(--field);border:1px solid var(--line);color:var(--head);box-shadow:none}
 #capture-area.done .cambtn::before,#capture-area.done .sparks{display:none}
@@ -59,9 +59,9 @@ button.main{flex:1;background:var(--navy);color:#fff;border:none;height:42px;bor
 button.sub{height:42px;padding:0 16px;border:1px solid var(--line);background:var(--field);color:var(--ink);border-radius:8px;font-size:14px;cursor:pointer}
 .navbar{display:flex;align-items:center;gap:10px;margin-bottom:18px}
 .navbar h1{font-size:18px;color:var(--head);font-weight:700}
-.navbar .logo{margin-left:auto;height:16px;width:auto;flex:none}
+.navbar .logo{margin-left:auto;height:16px;width:auto;flex:none;background:var(--logobg);padding:var(--logopad);border-radius:5px;box-sizing:content-box}
 .back{background:none;border:1px solid var(--line);border-radius:8px;padding:7px 12px;font-size:13px;color:var(--mut);cursor:pointer;white-space:nowrap}
-.tonote{width:100%;background:linear-gradient(135deg,#3f82d4 0%,#215ea6 100%);color:#fff;border:none;height:52px;border-radius:12px;font-size:15.5px;font-weight:800;letter-spacing:.3px;cursor:pointer;margin-top:26px;box-shadow:0 8px 20px rgba(33,94,166,.4)}
+.tonote{width:100%;background:linear-gradient(135deg,var(--ctaA) 0%,var(--ctaB) 100%);color:#fff;border:none;height:52px;border-radius:12px;font-size:15.5px;font-weight:800;letter-spacing:.3px;cursor:pointer;margin-top:26px;box-shadow:0 8px 20px var(--ctashadow)}
 .tonote:active{transform:translateY(1px)}
 .hero2{display:flex;align-items:center;gap:16px}
 .ring{--p:0;width:96px;height:96px;flex:none;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#5db3ff calc(var(--p)*3.6deg),rgba(255,255,255,.16) 0)}
@@ -123,13 +123,11 @@ textarea{width:100%;min-height:130px;border:1px solid var(--line);border-radius:
 .q.warn{outline:2px solid var(--warn);outline-offset:1px}
 .q .warnbadge{color:var(--warn);font-size:11px;font-weight:700;margin-left:6px}
 /* ▼ 다크모드 (화면 전용 — 인쇄는 항상 밝게 유지) */
-@media screen and (prefers-color-scheme:dark){
- :root{--ink:#e7e9ee;--mut:#9aa1ad;--line:#333a45;--bg:#0f1216;--card:#1a1d23;--navy:#294670;--ok:#45c495;--okbg:#123528;--no:#f2726f;--nobg:#3a2220;--accent:#6aa8ea;--accbg:#1d2c40;--warn:#e0a94a;--head:#e7e9ee;--barc:#6aa8ea;--field:#20242c;}
- body{background:var(--bg)}
- .result.warn{background:#3a2c14;color:#e6b866}
- .tonote{background:linear-gradient(135deg,#4a90e2 0%,#2f6fbf 100%);box-shadow:0 8px 22px rgba(0,0,0,.5)}
- .omrhead .logo,.navbar .logo{background:#fff;padding:3px 6px;border-radius:5px;box-sizing:content-box}
-}
+/* 다크 팔레트 — OS가 다크(사용자가 라이트로 강제 안 함)이거나, 토글로 수동 다크일 때 */
+@media screen and (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#e7e9ee;--mut:#9aa1ad;--line:#333a45;--bg:#0f1216;--card:#1a1d23;--navy:#294670;--ok:#45c495;--okbg:#123528;--no:#f2726f;--nobg:#3a2220;--accent:#6aa8ea;--accbg:#1d2c40;--warn:#e0a94a;--head:#e7e9ee;--barc:#6aa8ea;--field:#20242c;--warnbg:#3a2c14;--ctaA:#4a90e2;--ctaB:#2f6fbf;--ctashadow:rgba(0,0,0,.5);--logobg:#fff;--logopad:3px 6px;}}
+:root[data-theme="dark"]{--ink:#e7e9ee;--mut:#9aa1ad;--line:#333a45;--bg:#0f1216;--card:#1a1d23;--navy:#294670;--ok:#45c495;--okbg:#123528;--no:#f2726f;--nobg:#3a2220;--accent:#6aa8ea;--accbg:#1d2c40;--warn:#e0a94a;--head:#e7e9ee;--barc:#6aa8ea;--field:#20242c;--warnbg:#3a2c14;--ctaA:#4a90e2;--ctaB:#2f6fbf;--ctashadow:rgba(0,0,0,.5);--logobg:#fff;--logopad:3px 6px;}
+#themeToggle{position:fixed;right:14px;bottom:14px;z-index:50;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:19px;line-height:1;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center}
+@media print{#themeToggle{display:none!important}}
 @page{size:A4;margin:11mm}
 @media print{
  body{background:#fff;padding:0}.wrap{border:none;padding:0;max-width:none}
@@ -152,7 +150,16 @@ textarea{width:100%;min-height:130px;border:1px solid var(--line);border-radius:
  .review input[type=checkbox]{border:1.5px solid #666!important;background:#fff!important}
  .review input[type=checkbox]:checked{background:#185fa5!important;border-color:#185fa5!important}
 }
-</style></head>
+</style>
+<script>
+(function(){var r=document.documentElement,K='nqi-theme';
+ try{var s=localStorage.getItem(K);if(s)r.setAttribute('data-theme',s);}catch(e){}
+ function eff(){var t=r.getAttribute('data-theme');return t?t:((window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light');}
+ function icon(){var b=document.getElementById('themeToggle');if(b)b.textContent=eff()==='dark'?'☀️':'🌙';}
+ document.addEventListener('DOMContentLoaded',function(){var b=document.getElementById('themeToggle');if(!b)return;icon();
+  b.onclick=function(){var n=eff()==='dark'?'light':'dark';r.setAttribute('data-theme',n);try{localStorage.setItem(K,n);}catch(e){}icon();};});
+})();
+</script></head>
 <body>
 <!-- 화면 1: 답 입력 -->
 <div class="wrap view" id="view-input">
@@ -585,4 +592,5 @@ document.getElementById('reset').onclick=function(){picks={};
   };
 })();
 </script>
+<button id="themeToggle" type="button" aria-label="라이트/다크 모드 전환">🌙</button>
 </body></html>
