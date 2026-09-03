@@ -178,7 +178,9 @@ document.getElementById('reset').onclick=function(){picks={};
 
   // 그레이스케일 버퍼에서 (cx,cy) 반지름 r 원 안의 '어두운' 픽셀 비율(0~1).
   function sampleFill(gray, width, height, cx, cy, r, darkThresh) {
-    darkThresh = darkThresh == null ? 128 : darkThresh;
+    // 100: 학생이 칠한 '검정'만 어둡게 세고, 인쇄된 분홍 링·숫자(회색≈100~128)는 제외.
+    // (128이면 실물 사진에서 인쇄 분홍까지 세어져 안 칠한 칸도 '칠함'으로 오판→중복)
+    darkThresh = darkThresh == null ? 100 : darkThresh;
     let dark = 0, total = 0;
     for (let y = Math.max(0, cy - r); y <= Math.min(height - 1, cy + r); y++)
       for (let x = Math.max(0, cx - r); x <= Math.min(width - 1, cx + r); x++) {
@@ -298,18 +300,25 @@ document.getElementById('reset').onclick=function(){picks={};
     var scored = cands.map(function (c) {
       return { x: c.x, y: c.y, area: c.area, s: (c.fill == null ? 1 : c.fill) * c.area };
     }).sort(function (a, b) { return b.s - a.s; });
-    var top = scored.slice(0, Math.min(scored.length, 22));
+    var top = scored.slice(0, Math.min(scored.length, 28));
     var best = null, bestScore = -Infinity, n = top.length;
     for (var i = 0; i < n; i++) for (var j = i + 1; j < n; j++)
       for (var k = j + 1; k < n; k++) for (var l = k + 1; l < n; l++) {
+        var ar = [top[i].area, top[j].area, top[k].area, top[l].area];
+        var unif = Math.min.apply(null, ar) / Math.max.apply(null, ar); // 마크 4개 크기 균일도
+        if (unif < 0.55) continue;    // 크기 제각각이면 마크 아님(큰 버튼·UI요소 혼입 제거)
         var q = _pickCorners([top[i], top[j], top[k], top[l]]);
         var m = _quadMetrics(q);
         if (m.w < 12 || m.h < 12) continue;
         var aspErr = Math.abs(m.asp - expAspect) / expAspect;
         if (aspErr > 0.45) continue;                 // 카드 종횡비와 안 맞으면 제외
-        var ar = [top[i].area, top[j].area, top[k].area, top[l].area];
-        var unif = Math.min.apply(null, ar) / Math.max.apply(null, ar); // 마크 크기 균일도
-        var score = m.area * (1 - aspErr) * (0.5 + 0.5 * unif);
+        // 반듯한 직사각형인가(마주보는 변 길이가 비슷). 사다리꼴(엉뚱한 4점)이면 제외.
+        var dd = function (a, b) { return Math.hypot(a.x - b.x, a.y - b.y); };
+        var tw = dd(q[0], q[1]), bw = dd(q[3], q[2]), lh = dd(q[0], q[3]), rh = dd(q[1], q[2]);
+        if (Math.min(tw, bw) / Math.max(tw, bw) < 0.6) continue;
+        if (Math.min(lh, rh) / Math.max(lh, rh) < 0.6) continue;
+        // 균일·종횡비 통과한 것 중 가장 큰 사각형(=내부 버블격자보다 바깥의 마크가 이김)
+        var score = m.area * (1 - aspErr) * unif;
         if (score > bestScore) { bestScore = score; best = q; }
       }
     return best;
