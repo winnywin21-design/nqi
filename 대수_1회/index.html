@@ -149,7 +149,7 @@ NUMS.forEach(function(q){
   var subj=(T.split('·')[0]||'').trim();
   var pill=document.getElementById('hpill'),ht=document.getElementById('htitle');
   if(pill)pill.textContent=rn?('제 '+rn+' 회'):T;
-  if(ht)ht.textContent=subj?('수학영역('+subj+')'):'';})();
+  if(ht)ht.textContent=subj?('수학 영역('+subj+')'):'';})();
 
 // 촬영/직접입력 전에는 답 입력 격자를 숨긴다(촬영 성공 시 omr-ui가 revealAnswers 호출).
 window.revealAnswers=function(){var a=document.getElementById('answer-area');if(a)a.style.display='block';
