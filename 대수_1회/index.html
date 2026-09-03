@@ -19,14 +19,16 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var
 .cambtn::before{content:"";position:absolute;top:-40%;left:-30%;width:70%;height:180%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.10),transparent);transform:rotate(18deg)}
 .cambtn:active{transform:translateY(1px);box-shadow:0 5px 18px rgba(31,56,100,.34)}
 .cambtn .camicon{position:relative;display:flex;align-items:center;justify-content:center;font-size:58px;line-height:1;filter:drop-shadow(0 4px 10px rgba(0,0,0,.35));animation:campop .6s cubic-bezier(.34,1.7,.5,1) both,campulse 2.2s ease-in-out 1s infinite}
-.cambtn .camicon::before{content:"";position:absolute;left:50%;top:50%;width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.8),rgba(255,255,255,0) 68%);transform:translate(-50%,-50%) scale(.2);opacity:0;pointer-events:none;animation:camflash 2.6s ease-out .4s infinite}
+.cambtn .camicon::before{content:"";position:absolute;left:50%;top:50%;width:165px;height:165px;border-radius:50%;background:radial-gradient(circle,#fff 0%,rgba(255,255,255,.92) 28%,rgba(255,255,255,0) 66%);transform:translate(-50%,-50%) scale(.25);opacity:0;pointer-events:none;animation:camflash 2.4s ease-out .4s infinite}
+.cambtn::after{content:"";position:absolute;inset:0;border-radius:16px;background:#fff;opacity:0;pointer-events:none;animation:cardflash 2.4s ease-out .4s infinite}
 .cambtn .camlabel{font-size:21px;font-weight:800;letter-spacing:.4px}
 .cambtn .camsub{font-size:13px;font-weight:500;color:rgba(255,255,255,.78)}
 @keyframes campulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
 @keyframes campop{0%{transform:scale(.3);opacity:0}60%{transform:scale(1.15);opacity:1}100%{transform:scale(1);opacity:1}}
-@keyframes camflash{0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}5%{opacity:.8}23%{opacity:0;transform:translate(-50%,-50%) scale(2.1)}100%{opacity:0;transform:translate(-50%,-50%) scale(2.1)}}
+@keyframes camflash{0%{opacity:0;transform:translate(-50%,-50%) scale(.25)}4%{opacity:1;transform:translate(-50%,-50%) scale(.7)}24%{opacity:0;transform:translate(-50%,-50%) scale(2.5)}100%{opacity:0;transform:translate(-50%,-50%) scale(2.5)}}
+@keyframes cardflash{0%{opacity:0}3%{opacity:.42}13%{opacity:0}100%{opacity:0}}
 @keyframes camin{0%{opacity:0;transform:scale(.86) translateY(12px)}100%{opacity:1;transform:scale(1) translateY(0)}}
-@media(prefers-reduced-motion:reduce){.cambtn,.cambtn .camicon,.cambtn .camicon::before{animation:none!important}}
+@media(prefers-reduced-motion:reduce){.cambtn,.cambtn::after,.cambtn .camicon,.cambtn .camicon::before{animation:none!important}}
 .camtip{text-align:center;font-size:15px;color:var(--head);margin-top:14px;font-weight:700;line-height:1.5}
 .camtip b{color:#e0562f;font-weight:800}
 .camhint{text-align:center;font-size:12.5px;color:var(--mut);margin-top:6px}
@@ -35,7 +37,7 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var
 .result.warn{background:#fff4e5;color:var(--warn)}
 /* 촬영 완료 후: 촬영 박스를 작은 '다시 촬영' 버튼으로 축소 */
 #capture-area.done .cambtn{min-height:48px;flex-direction:row;gap:8px;background:var(--field);border:1px solid var(--line);color:var(--head);box-shadow:none}
-#capture-area.done .cambtn::before{display:none}
+#capture-area.done .cambtn::before,#capture-area.done .cambtn::after,#capture-area.done .cambtn .camicon::before{display:none}
 #capture-area.done .cambtn .camicon{font-size:18px;filter:none;animation:none}
 #capture-area.done .cambtn .camlabel{font-size:14px;letter-spacing:0}
 #capture-area.done .cambtn .camsub{display:none}
