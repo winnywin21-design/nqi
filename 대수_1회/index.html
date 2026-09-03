@@ -15,14 +15,18 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var
 .omrhead .pill{background:#b25566;color:#fff;font-weight:700;font-size:15px;padding:6px 14px;border-radius:8px;white-space:nowrap}
 .omrhead .htitle{font-size:16px;font-weight:700;color:var(--ink)}
 .omrhead .logo{margin-left:auto;height:16px;width:auto;flex:none}
-.cambtn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;width:100%;min-height:208px;background:linear-gradient(160deg,#2a4c83 0%,#1F3864 58%,#162a4d 100%);color:#fff;border-radius:16px;cursor:pointer;box-shadow:0 8px 28px rgba(31,56,100,.34);border:2px dashed rgba(255,255,255,.30);position:relative;overflow:hidden;-webkit-tap-highlight-color:transparent}
+.cambtn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;width:100%;min-height:208px;background:linear-gradient(160deg,#2a4c83 0%,#1F3864 58%,#162a4d 100%);color:#fff;border-radius:16px;cursor:pointer;box-shadow:0 8px 28px rgba(31,56,100,.34);border:2px dashed rgba(255,255,255,.30);position:relative;overflow:hidden;-webkit-tap-highlight-color:transparent;animation:camin .5s cubic-bezier(.34,1.56,.64,1)}
 .cambtn::before{content:"";position:absolute;top:-40%;left:-30%;width:70%;height:180%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.10),transparent);transform:rotate(18deg)}
 .cambtn:active{transform:translateY(1px);box-shadow:0 5px 18px rgba(31,56,100,.34)}
-.cambtn .camicon{display:flex;align-items:center;justify-content:center;font-size:58px;line-height:1;filter:drop-shadow(0 4px 10px rgba(0,0,0,.35));animation:campulse 2.2s ease-in-out infinite}
+.cambtn .camicon{position:relative;display:flex;align-items:center;justify-content:center;font-size:58px;line-height:1;filter:drop-shadow(0 4px 10px rgba(0,0,0,.35));animation:campop .6s cubic-bezier(.34,1.7,.5,1) both,campulse 2.2s ease-in-out 1s infinite}
+.cambtn .camicon::before{content:"";position:absolute;left:50%;top:50%;width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.85),rgba(255,255,255,0) 68%);transform:translate(-50%,-50%) scale(.2);opacity:0;pointer-events:none;animation:camflash .6s ease-out .18s both}
 .cambtn .camlabel{font-size:21px;font-weight:800;letter-spacing:.4px}
 .cambtn .camsub{font-size:13px;font-weight:500;color:rgba(255,255,255,.78)}
 @keyframes campulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
-@media(prefers-reduced-motion:reduce){.cambtn .camicon{animation:none}}
+@keyframes campop{0%{transform:scale(.3);opacity:0}60%{transform:scale(1.15);opacity:1}100%{transform:scale(1);opacity:1}}
+@keyframes camflash{0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}22%{opacity:.85}100%{opacity:0;transform:translate(-50%,-50%) scale(2.1)}}
+@keyframes camin{0%{opacity:0;transform:scale(.86) translateY(12px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+@media(prefers-reduced-motion:reduce){.cambtn,.cambtn .camicon,.cambtn .camicon::before{animation:none!important}}
 .camtip{text-align:center;font-size:15px;color:var(--head);margin-top:14px;font-weight:700;line-height:1.5}
 .camtip b{color:#e0562f;font-weight:800}
 .camhint{text-align:center;font-size:12.5px;color:var(--mut);margin-top:6px}
