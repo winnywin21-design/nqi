@@ -14,7 +14,7 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var
 .omrhead{display:flex;align-items:center;gap:10px;margin-bottom:18px}
 .omrhead .pill{background:#b25566;color:#fff;font-weight:700;font-size:15px;padding:6px 14px;border-radius:8px;white-space:nowrap}
 .omrhead .htitle{font-size:16px;font-weight:700;color:var(--ink)}
-.cambtn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;height:66px;background:var(--navy);color:#fff;border-radius:12px;font-size:18px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(31,56,100,.28)}
+.cambtn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;min-height:104px;background:var(--navy);color:#fff;border-radius:12px;font-size:19px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(31,56,100,.28)}
 .cambtn:active{transform:translateY(1px)}
 .camhint{text-align:center;font-size:13px;color:var(--mut);margin-top:9px}
 .linkbtn{display:block;margin:14px auto 0;background:none;border:none;color:var(--accent);font-size:14px;text-decoration:underline;cursor:pointer}
@@ -90,7 +90,7 @@ textarea{width:100%;min-height:130px;border:1px solid var(--line);border-radius:
   <div class="omrhead"><span class="pill" id="hpill"></span><span class="htitle" id="htitle"></span></div>
   <div id="capture-area">
     <div id="omr-cam" style="display:none">
-      <label class="cambtn omrbtn">📷 답안카드 촬영<input id="omr-file" type="file" accept="image/*" capture="environment" hidden></label>
+      <label class="cambtn">📷 답안카드 촬영<input id="omr-file" type="file" accept="image/*" capture="environment" hidden></label>
       <div class="camhint">OMR 카드를 촬영하면 채점이 시작됩니다.</div>
       <div id="omr-msg"></div>
     </div>
