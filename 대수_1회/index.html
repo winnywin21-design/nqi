@@ -25,7 +25,10 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var
 .camhint{text-align:center;font-size:13px;color:var(--mut);margin-top:11px}
 .camtip{text-align:center;font-size:13.5px;color:var(--accent);background:var(--accbg);border:1px solid #cfe2f6;border-radius:9px;padding:9px 12px;margin-top:9px;font-weight:600;line-height:1.5}
 .camtip b{font-weight:800}
-.linkbtn{display:block;margin:14px auto 0;background:none;border:none;color:var(--accent);font-size:14px;text-decoration:underline;cursor:pointer}
+.ordiv{display:flex;align-items:center;gap:10px;color:var(--mut);font-size:12px;margin:18px 0 12px}
+.ordiv::before,.ordiv::after{content:"";flex:1;height:1px;background:var(--line)}
+.ghostbtn{display:block;width:100%;height:44px;background:#fff;border:1px solid var(--line);border-radius:9px;color:var(--ink);font-size:14px;font-weight:600;cursor:pointer}
+.ghostbtn:active{background:var(--bg)}
 #omr-msg{display:block;text-align:center;font-size:13px;color:var(--mut);margin-top:8px}
 .grid{display:grid;grid-template-columns:1fr;gap:10px}
 .q{background:var(--bg);border-radius:8px;padding:9px 11px}
@@ -103,7 +106,8 @@ textarea{width:100%;min-height:130px;border:1px solid var(--line);border-radius:
       <div class="camtip">📐 화면에 답안카드가 <b>꽉 차게</b> 촬영해 주세요</div>
       <div id="omr-msg"></div>
     </div>
-    <button class="linkbtn" id="manualBtn">또는 직접 입력하기</button>
+    <div class="ordiv"><span>또는</span></div>
+    <button class="ghostbtn" id="manualBtn">직접 입력하기</button>
   </div>
   <div id="omr-preview" style="display:none;margin-bottom:12px">
     <img id="omr-img" style="max-width:100%;border:1px solid var(--line);border-radius:8px">
