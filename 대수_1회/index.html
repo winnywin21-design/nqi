@@ -294,7 +294,19 @@ document.getElementById('reset').onclick=function(){picks={};
   function detectAndWarp(imgEl, spec, outW) {
     outW = outW || 800;
     const outH = Math.round(outW * spec.heightUnits);
-    const src = cv.imread(imgEl);
+    const src0 = cv.imread(imgEl);
+    // 고해상도 사진에서 큰 마크가 적응형이진화(블록31)로 속이 비어 사각형 필터에 탈락하는 것을
+    // 방지: 작업 해상도(폭 1000px)로 축소해 마크가 적당히 작아지게 한다(해상도 독립·속도↑).
+    const WORK = 1000;
+    let src;
+    if (src0.cols > WORK) {
+      src = new cv.Mat();
+      cv.resize(src0, src, new cv.Size(WORK, Math.round(src0.rows * WORK / src0.cols)),
+        0, 0, cv.INTER_AREA);
+      src0.delete();
+    } else {
+      src = src0;
+    }
     const gray = new cv.Mat();
     cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY);
     const bin = new cv.Mat();
