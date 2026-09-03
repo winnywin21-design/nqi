@@ -29,6 +29,13 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var
 .result{border-radius:10px;padding:12px 14px;font-size:14.5px;font-weight:700;margin-bottom:14px;line-height:1.45}
 .result.ok{background:var(--okbg);color:var(--ok)}
 .result.warn{background:#fff4e5;color:var(--warn)}
+/* 촬영 완료 후: 촬영 박스를 작은 '다시 촬영' 버튼으로 축소 */
+#capture-area.done .cambtn{min-height:48px;flex-direction:row;gap:8px;background:#fff;border:1px solid var(--line);color:var(--navy);box-shadow:none}
+#capture-area.done .cambtn::before{display:none}
+#capture-area.done .cambtn .camicon{width:28px;height:28px;font-size:15px;box-shadow:none;animation:none}
+#capture-area.done .cambtn .camlabel{font-size:14px;letter-spacing:0}
+#capture-area.done .cambtn .camsub{display:none}
+#capture-area.done .camtip{display:none}
 .ordiv{display:flex;align-items:center;gap:10px;color:var(--mut);font-size:12px;margin:18px 0 12px}
 .ordiv::before,.ordiv::after{content:"";flex:1;height:1px;background:var(--line)}
 .ghostbtn{display:block;width:100%;height:44px;background:#fff;border:1px solid var(--line);border-radius:9px;color:var(--ink);font-size:14px;font-weight:600;cursor:pointer}
@@ -107,7 +114,6 @@ textarea{width:100%;min-height:130px;border:1px solid var(--line);border-radius:
     <div id="omr-cam" style="display:none">
       <label class="cambtn"><span class="camicon">📷</span><span class="camlabel">답안카드 촬영</span><span class="camsub">탭하여 카메라 열기</span><input id="omr-file" type="file" accept="image/*" capture="environment" hidden></label>
       <div class="camtip">화면에 답안카드가 <b>꽉 차게</b> 촬영해 주세요</div>
-      <div class="camhint">답안카드를 촬영하면 채점이 시작됩니다.</div>
       <div id="omr-msg"></div>
     </div>
     <div class="ordiv"><span>또는</span></div>
@@ -165,7 +171,8 @@ NUMS.forEach(function(q){
 
 // 촬영/직접입력 전에는 답 입력 격자를 숨긴다(촬영 성공 시 omr-ui가 revealAnswers 호출).
 window.revealAnswers=function(){var a=document.getElementById('answer-area');if(a)a.style.display='block';
-  var mb=document.getElementById('manualBtn');if(mb)mb.style.display='none';};
+  var mb=document.getElementById('manualBtn');if(mb)mb.style.display='none';
+  var od=document.querySelector('.ordiv');if(od)od.style.display='none';};
 (function(){var mb=document.getElementById('manualBtn');if(mb)mb.onclick=window.revealAnswers;
   if(!window.CARDSPEC){var ca=document.getElementById('capture-area');if(ca)ca.style.display='none';window.revealAnswers();}})();
 
@@ -488,6 +495,10 @@ document.getElementById('reset').onclick=function(){picks={};
           return;
         }
         if (window.revealAnswers) window.revealAnswers();   // 인식되면 답 입력 격자 노출
+        var ca = document.getElementById('capture-area');   // 촬영 박스를 작게 축소
+        if (ca) ca.classList.add('done');
+        var lbl = document.querySelector('.camlabel');
+        if (lbl) lbl.textContent = '다시 촬영';
         var warn = 0;
         Object.keys(res.answers).forEach(function (q) {
           setPick(q, res.answers[q].kind, res.answers[q].value);
