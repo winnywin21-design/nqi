@@ -26,6 +26,9 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var
 .camtip{text-align:center;font-size:15px;color:var(--navy);margin-top:14px;font-weight:700;line-height:1.5}
 .camtip b{color:#e0562f;font-weight:800}
 .camhint{text-align:center;font-size:12.5px;color:var(--mut);margin-top:6px}
+.result{border-radius:10px;padding:12px 14px;font-size:14.5px;font-weight:700;margin-bottom:14px;line-height:1.45}
+.result.ok{background:var(--okbg);color:var(--ok)}
+.result.warn{background:#fff4e5;color:var(--warn)}
 .ordiv{display:flex;align-items:center;gap:10px;color:var(--mut);font-size:12px;margin:18px 0 12px}
 .ordiv::before,.ordiv::after{content:"";flex:1;height:1px;background:var(--line)}
 .ghostbtn{display:block;width:100%;height:44px;background:#fff;border:1px solid var(--line);border-radius:9px;color:var(--ink);font-size:14px;font-weight:600;cursor:pointer}
@@ -114,6 +117,7 @@ textarea{width:100%;min-height:130px;border:1px solid var(--line);border-radius:
     <img id="omr-img" style="max-width:100%;border:1px solid var(--line);border-radius:8px">
   </div>
   <div id="answer-area" style="display:none">
+    <div id="omr-result" class="result" style="display:none"></div>
     <div class="grid" id="grid"></div>
     <div class="btns"><button class="main" id="grade">채점하기</button><button class="sub" id="reset">지우기</button></div>
   </div>
@@ -489,8 +493,15 @@ document.getElementById('reset').onclick=function(){picks={};
           setPick(q, res.answers[q].kind, res.answers[q].value);
           flagQ(q, res.flags[q]); if (res.flags[q] !== 'ok') warn++;
         });
-        msg.textContent = warn ? ('읽었어요. ⚠ 표시된 ' + warn + '문항만 확인/수정 후 채점하세요.')
-                               : '읽었어요. 확인 후 채점하세요.';
+        msg.textContent = '';
+        var rb = document.getElementById('omr-result');
+        if (rb) {
+          rb.style.display = 'block';
+          rb.className = 'result ' + (warn ? 'warn' : 'ok');
+          rb.textContent = warn
+            ? ('📷 사진을 읽었습니다 — ⚠ 표시된 ' + warn + '문항을 확인·수정 후 채점하세요.')
+            : '📷 사진을 읽었습니다 — 확인 후 채점하세요.';
+        }
         document.getElementById('omr-preview').style.display = 'block';
       } catch (e) {
         msg.textContent = '인식에 실패했어요. 수동으로 입력해 채점하세요.';
