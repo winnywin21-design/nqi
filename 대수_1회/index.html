@@ -14,9 +14,15 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var
 .omrhead{display:flex;align-items:center;gap:10px;margin-bottom:18px}
 .omrhead .pill{background:#b25566;color:#fff;font-weight:700;font-size:15px;padding:6px 14px;border-radius:8px;white-space:nowrap}
 .omrhead .htitle{font-size:16px;font-weight:700;color:var(--ink)}
-.cambtn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;min-height:104px;background:var(--navy);color:#fff;border-radius:12px;font-size:19px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(31,56,100,.28)}
-.cambtn:active{transform:translateY(1px)}
-.camhint{text-align:center;font-size:13px;color:var(--mut);margin-top:9px}
+.cambtn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;width:100%;min-height:208px;background:linear-gradient(160deg,#2a4c83 0%,#1F3864 58%,#162a4d 100%);color:#fff;border-radius:16px;cursor:pointer;box-shadow:0 8px 28px rgba(31,56,100,.34);border:2px dashed rgba(255,255,255,.30);position:relative;overflow:hidden;-webkit-tap-highlight-color:transparent}
+.cambtn::before{content:"";position:absolute;top:-40%;left:-30%;width:70%;height:180%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.10),transparent);transform:rotate(18deg)}
+.cambtn:active{transform:translateY(1px);box-shadow:0 5px 18px rgba(31,56,100,.34)}
+.cambtn .camicon{width:74px;height:74px;border-radius:50%;background:#b25566;display:flex;align-items:center;justify-content:center;font-size:34px;box-shadow:0 6px 16px rgba(178,85,102,.5);animation:campulse 2.2s ease-in-out infinite}
+.cambtn .camlabel{font-size:21px;font-weight:800;letter-spacing:.4px}
+.cambtn .camsub{font-size:13px;font-weight:500;color:rgba(255,255,255,.78)}
+@keyframes campulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+@media(prefers-reduced-motion:reduce){.cambtn .camicon{animation:none}}
+.camhint{text-align:center;font-size:13px;color:var(--mut);margin-top:11px}
 .linkbtn{display:block;margin:14px auto 0;background:none;border:none;color:var(--accent);font-size:14px;text-decoration:underline;cursor:pointer}
 #omr-msg{display:block;text-align:center;font-size:13px;color:var(--mut);margin-top:8px}
 .grid{display:grid;grid-template-columns:1fr;gap:10px}
@@ -90,7 +96,7 @@ textarea{width:100%;min-height:130px;border:1px solid var(--line);border-radius:
   <div class="omrhead"><span class="pill" id="hpill"></span><span class="htitle" id="htitle"></span></div>
   <div id="capture-area">
     <div id="omr-cam" style="display:none">
-      <label class="cambtn">📷 답안카드 촬영<input id="omr-file" type="file" accept="image/*" capture="environment" hidden></label>
+      <label class="cambtn"><span class="camicon">📷</span><span class="camlabel">답안카드 촬영</span><span class="camsub">탭하여 카메라 열기</span><input id="omr-file" type="file" accept="image/*" capture="environment" hidden></label>
       <div class="camhint">OMR 카드를 촬영하면 채점이 시작됩니다.</div>
       <div id="omr-msg"></div>
     </div>
