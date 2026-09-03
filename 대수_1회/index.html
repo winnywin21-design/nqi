@@ -87,7 +87,15 @@ button.sub{height:42px;padding:0 16px;border:1px solid var(--line);background:va
 .bar .t>span:first-child{font-weight:600;color:#fff}
 #panel-score .track{background:rgba(255,255,255,.18)}
 .track{height:9px;background:var(--line);border-radius:99px;overflow:hidden}.fill{height:100%;border-radius:99px}
+.printbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:-2px 0 14px}
+.printbar .pbtxt{font-size:12.5px;color:var(--mut)}
+.pball{background:var(--field);border:1px solid var(--line);border-radius:8px;padding:6px 12px;font-size:12.5px;font-weight:600;color:var(--ink);cursor:pointer}
 .onote{border:1px solid var(--line);border-left:4px solid var(--navy);border-radius:12px;padding:14px 14px 16px;margin-bottom:14px}
+.onote.noprint{opacity:.45}
+.pchk{display:flex;align-items:center;justify-content:flex-end;gap:6px;font-size:12px;font-weight:600;color:var(--mut);margin-bottom:9px;cursor:pointer;-webkit-user-select:none;user-select:none}
+.pchk input{-webkit-appearance:none;appearance:none;width:17px;height:17px;margin:0;border:1.5px solid #9aa0aa;border-radius:4px;background:var(--field);position:relative;cursor:pointer;flex:none}
+.pchk input:checked{background:var(--accent);border-color:var(--accent)}
+.pchk input:checked::after{content:'✓';position:absolute;top:-2px;left:2px;color:#fff;font-size:13px;font-weight:700}
 .onote .oh{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:13px;flex-wrap:wrap}
 .onote .tag{background:var(--accbg);color:var(--head);font-weight:700;padding:2px 9px;border-radius:6px}
 .onote .utag{background:var(--bg);color:var(--mut);padding:2px 8px;border-radius:6px}
@@ -122,10 +130,12 @@ textarea{width:100%;min-height:130px;border:1px solid var(--line);border-radius:
  body{background:#fff;padding:0}.wrap{border:none;padding:0;max-width:none}
  #view-input,#view-score{display:none!important}
  #view-note{display:block!important}
- .navbar,.sec,#panel-note>button{display:none!important}
+ .navbar,.sec,#panel-note>button,.printbar,.pchk{display:none!important}
+ /* 체크 해제한 문항은 인쇄 제외 */
+ .onote.noprint{display:none!important}
  /* 한 문항 = A4 한 장, 풀이 칸이 남는 높이를 꽉 채움(하단 여백 제거) */
  .onote{break-inside:avoid;page-break-after:always;border:1px solid #bbb;padding:10px;margin:0;height:275mm;display:flex;flex-direction:column}
- .onote:last-child{page-break-after:auto}
+ .onote:last-child,.onote.lastprint{page-break-after:auto}
  .onote .oh{margin-bottom:7px}
  .onote img{margin-bottom:8px;width:auto;max-width:100%;max-height:105mm;object-fit:contain}
  .fld{margin-top:8px}
@@ -214,6 +224,11 @@ function show(id){VIEWS.forEach(function(v){document.getElementById(v).style.dis
 document.getElementById('toInput').onclick=function(){show('view-input');};
 document.getElementById('toNote').onclick=function(){show('view-note');};
 document.getElementById('toScore').onclick=function(){show('view-score');};
+window.notePrintAll=function(on){[].forEach.call(document.querySelectorAll('#panel-note .pchk input'),function(c){c.checked=on;c.closest('.onote').classList.toggle('noprint',!on);});
+  var b=document.getElementById('pbAll');if(b){b.dataset.on=on?'1':'0';b.textContent=on?'전체 해제':'전체 선택';}};
+window.addEventListener('beforeprint',function(){   // 선택된 마지막 문항엔 페이지나눔 제거(빈 페이지 방지)
+  var v=[].filter.call(document.querySelectorAll('#panel-note .onote'),function(o){return !o.classList.contains('noprint');});
+  v.forEach(function(o,i){o.classList.toggle('lastprint',i===v.length-1);});});
 
 document.getElementById('grade').onclick=function(){
   var correct=0,score=0,wrong=[],bu={};UNITS.forEach(function(u){bu[u]={t:0,c:0};});
@@ -242,10 +257,12 @@ document.getElementById('grade').onclick=function(){
     '<p class="sec">단원별 정답률</p><div class="sect">'+bars+'</div>';
 
   if(!wrong.length){PN.innerHTML='<p class="allok">전 문항 정답입니다. 오답노트에 담을 문항이 없어요.</p>';}
-  else{var html='<p class="sec">오답노트 — 틀린 '+wrong.length+'문항</p>';
+  else{var html='<p class="sec">오답노트 — 틀린 '+wrong.length+'문항</p>'+
+      '<div class="printbar"><span class="pbtxt">인쇄할 문항을 선택하세요</span><button type="button" class="pball" id="pbAll" data-on="1" onclick="notePrintAll(this.dataset.on!==\'1\')">전체 해제</button></div>';
     wrong.forEach(function(q){
       var rs='';REASONS.forEach(function(r){rs+='<span class="rbtn" onclick="this.classList.toggle(\'on\')">'+r+'</span>';});
-      html+='<div class="onote"><div class="oh"><span class="tag">'+q+'번</span><span class="utag">'+META[q].unit+'</span><span class="ans">내 답 '+mine(q)+' · 정답 '+key(q)+'</span></div>'+
+      html+='<div class="onote"><label class="pchk"><input type="checkbox" checked onchange="this.closest(\'.onote\').classList.toggle(\'noprint\',!this.checked)"><span>인쇄 포함</span></label>'+
+        '<div class="oh"><span class="tag">'+q+'번</span><span class="utag">'+META[q].unit+'</span><span class="ans">내 답 '+mine(q)+' · 정답 '+key(q)+'</span></div>'+
         '<img src="'+META[q].img+'" alt="'+q+'번 문제">'+
         '<div class="fld"><div class="lab">틀린 이유</div><div class="reasons">'+rs+'</div></div>'+
         '<div class="fld solve"><div class="lab">풀이 · 메모</div><textarea placeholder="올바른 풀이나 떠올려야 할 개념을 적어두세요"></textarea></div>'+
