@@ -283,6 +283,38 @@ document.getElementById('reset').onclick=function(){picks={};
     return [TL, TR, BR, BL];
   }
 
+  // 어수선한 배경(툴바·화면 테두리 등)에서도 카드 마크 4개를 견고하게 고른다.
+  // 아이디어: 후보를 '마크다움(solidity×면적)' 상위로 추려, 그중 카드 종횡비(expAspect)에
+  // 맞는 사각형을 이루는 4점 조합을 찾는다. 잡음(툴바)·버블(원)은 종횡비/solidity로 탈락.
+  function _quadMetrics(q) {
+    var d = function (a, b) { return Math.hypot(a.x - b.x, a.y - b.y); };
+    var w = (d(q[0], q[1]) + d(q[3], q[2])) / 2;   // (TL-TR + BL-BR)/2
+    var h = (d(q[0], q[3]) + d(q[1], q[2])) / 2;   // (TL-BL + TR-BR)/2
+    return { w: w, h: h, area: w * h, asp: h / (w || 1) };
+  }
+  function pickCardQuad(cands, expAspect) {
+    if (!cands || cands.length < 4) return null;
+    // 마크다움 점수(solidity×면적)로 상위 후보만 남겨 조합 수를 줄인다.
+    var scored = cands.map(function (c) {
+      return { x: c.x, y: c.y, area: c.area, s: (c.fill == null ? 1 : c.fill) * c.area };
+    }).sort(function (a, b) { return b.s - a.s; });
+    var top = scored.slice(0, Math.min(scored.length, 22));
+    var best = null, bestScore = -Infinity, n = top.length;
+    for (var i = 0; i < n; i++) for (var j = i + 1; j < n; j++)
+      for (var k = j + 1; k < n; k++) for (var l = k + 1; l < n; l++) {
+        var q = _pickCorners([top[i], top[j], top[k], top[l]]);
+        var m = _quadMetrics(q);
+        if (m.w < 12 || m.h < 12) continue;
+        var aspErr = Math.abs(m.asp - expAspect) / expAspect;
+        if (aspErr > 0.45) continue;                 // 카드 종횡비와 안 맞으면 제외
+        var ar = [top[i].area, top[j].area, top[k].area, top[l].area];
+        var unif = Math.min.apply(null, ar) / Math.max.apply(null, ar); // 마크 크기 균일도
+        var score = m.area * (1 - aspErr) * (0.5 + 0.5 * unif);
+        if (score > bestScore) { bestScore = score; best = q; }
+      }
+    return best;
+  }
+
   // 마커의 '정규화 위치'(폭 단위)를 출력 좌표로 보내는 목적지 점(좌상,우상,우하,좌하).
   // omr-core가 좌표를 x*outW, y*outW로 읽으므로 마커도 같은 규칙으로 펴야 정합.
   // markers 입력 순서는 [좌상,우상,좌하,우하](cardspec 순).
@@ -321,11 +353,14 @@ document.getElementById('reset').onclick=function(){picks={};
       const rect = cv.boundingRect(cnt);
       const ar = rect.width / rect.height;
       if (ar > 0.6 && ar < 1.6 && area > 0.5 * rect.width * rect.height)
-        sq.push({ x: rect.x + rect.width / 2, y: rect.y + rect.height / 2, area });
+        sq.push({ x: rect.x + rect.width / 2, y: rect.y + rect.height / 2,
+          area: area, fill: area / (rect.width * rect.height) });
     }
     let result = null;
     if (sq.length >= 4) {
-      const quad = _pickCorners(sq);
+      const my = spec.markers.map(m => m.y), mx = spec.markers.map(m => m.x);
+      const expAspect = (Math.max(...my) - Math.min(...my)) / (Math.max(...mx) - Math.min(...mx));
+      const quad = pickCardQuad(sq, expAspect) || _pickCorners(sq);  // 종횡비 매칭 우선, 실패 시 극단점
       const srcTri = cv.matFromArray(4, 1, cv.CV_32FC2, quad.flatMap(p => [p.x, p.y]));
       const dstTri = cv.matFromArray(4, 1, cv.CV_32FC2, _contentDst(spec.markers, outW));
       const M = cv.getPerspectiveTransform(srcTri, dstTri);
@@ -340,7 +375,7 @@ document.getElementById('reset').onclick=function(){picks={};
     return result;
   }
 
-  root.OMRCv = { detectAndWarp, _pickCorners, _contentDst };
+  root.OMRCv = { detectAndWarp, _pickCorners, pickCardQuad, _quadMetrics, _contentDst };
 })(typeof globalThis !== "undefined" ? globalThis : this);
 
 // 촬영 → 인식 → 입력화면 자동채움. CARDSPEC/META/picks/grid 전역 사용.
